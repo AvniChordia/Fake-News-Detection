@@ -1,0 +1,6 @@
+.env
+Fake.csv
+True.csv
+news_clean.csv
+__pycache__/
+*.pyc

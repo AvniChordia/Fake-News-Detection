@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake News Detector</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 50%;
+            margin: auto;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .fake {
+            color: red;
+            font-weight: bold;
+        }
+
+        .real {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>📰 Fake News Detection System</h2>
+
+        <form id="newsForm">
+            <input type="text" id="headline" name="headline" placeholder="Enter news headline..." required>
+            <br>
+            <button type="submit">Check</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById("newsForm");
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const headline = document.getElementById("headline").value;
+
+            fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "headline=" + encodeURIComponent(headline)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // DEBUG
+
+                const resultDiv = document.getElementById("result");
+
+                resultDiv.innerHTML = `
+                    <p>Offline Model: <b>${data.offline}</b></p>
+                    <p>Gemini AI: <b>${data.gemini}</b></p>
+                `;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("result").innerHTML = "Something went wrong!";
+            });
+        });
+    </script>
+</body>
+</html>
